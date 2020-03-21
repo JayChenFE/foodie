@@ -4,6 +4,8 @@ import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.service.UserService;
 import com.github.jaychenfe.utils.ApiResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author jaychenfe
  */
+@Api(value = "注册登录", tags = {"注册登录"})
 @RestController
 @RequestMapping("passport")
 public class PassportController {
@@ -29,6 +32,7 @@ public class PassportController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "用户名否存在", notes = "检查用户名是否存在")
     @GetMapping("/usernameIsExist")
     public ApiResponse usernameIsExist(@RequestParam String username) {
         // 1.判断用户名是否为空
@@ -44,6 +48,7 @@ public class PassportController {
         return ApiResponse.ok();
     }
 
+    @ApiOperation(value = "用户注册", notes = "用户注册")
     @PostMapping("/register")
     public ApiResponse register(@RequestBody UserBO userBO) {
 

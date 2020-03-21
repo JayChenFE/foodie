@@ -5,11 +5,14 @@ import com.github.jaychenfe.mapper.UsersMapper;
 import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.pojo.mapping.UsersMapping;
+import com.github.jaychenfe.pojo.vo.UserVO;
 import com.github.jaychenfe.utils.Md5Utils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
+
+import java.util.Optional;
 
 /**
  * @author jaychenfe
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Users createUser(UserBO userBO) {
-        Users users = usersMapping.userBoToUsers(userBO);
+        Users users = usersMapping.userBoToUser(userBO);
         users.setId(sid.nextShort());
         users.setPassword(Md5Utils.getMd5Str(userBO.getPassword()));
         users.setFace(USER_FACE);
@@ -49,5 +52,18 @@ public class UserServiceImpl implements UserService {
 
         usersMapper.insert(users);
         return users;
+    }
+
+    @Override
+    public Optional<UserVO> queryUserForLogin(String username, String password) {
+        Example userExample = new Example(Users.class);
+        Example.Criteria userCriteria = userExample.createCriteria();
+        userCriteria.andEqualTo("username", username);
+        userCriteria.andEqualTo("password", password);
+
+        Users user = usersMapper.selectOneByExample(userExample);
+        UserVO userVO = usersMapping.userToUserVO(user);
+
+        return Optional.of(userVO);
     }
 }

@@ -4,6 +4,9 @@ import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.service.UserService;
 import com.github.jaychenfe.utils.ApiResponse;
+import com.github.jaychenfe.utils.CookieUtils;
+import com.github.jaychenfe.utils.JsonUtils;
+import com.github.jaychenfe.utils.Md5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author jaychenfe
@@ -82,6 +88,29 @@ public class PassportController {
         Users user = userService.createUser(userBO);
 
         return ApiResponse.ok(user);
+    }
+
+    @ApiOperation(value = "用户登录", notes = "用户登录")
+    @PostMapping("/login")
+    public ApiResponse login(HttpServletRequest request,
+                             HttpServletResponse response,
+                             @RequestBody UserBO userBO) {
+
+        String username = userBO.getUsername();
+        String password = userBO.getPassword();
+
+        // 1.判断用户名密码是否为空
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            return ApiResponse.errorMsg("用户名或密码不能为空");
+        }
+
+        return userService.queryUserForLogin(username, Md5Utils.getMd5Str(password))
+                .map(userVO -> {
+                    CookieUtils.setCookie(request, response, "user",
+                            JsonUtils.objectToJson(userVO), true);
+                    return ApiResponse.ok(userVO);
+                })
+                .orElse(ApiResponse.errorMsg("用户名或密码错误"));
     }
 
 }

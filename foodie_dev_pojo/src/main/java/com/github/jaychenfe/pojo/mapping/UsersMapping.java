@@ -2,6 +2,7 @@ package com.github.jaychenfe.pojo.mapping;
 
 import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
+import com.github.jaychenfe.pojo.vo.UserVO;
 import com.github.jaychenfe.utils.DateUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,6 +25,8 @@ public interface UsersMapping {
     @Mapping(target = "birthday", expression = "java(DateUtil.stringToDate(\"1900-01-01\"))")
     @Mapping(target = "createdTime", expression = "java(new Date())")
     @Mapping(target = "updatedTime", expression = "java(new Date())")
-    Users userBoToUsers(UserBO userBO);
+    Users userBoToUser(UserBO userBO);
+
+    UserVO  userToUserVO(Users Users);
 
 }

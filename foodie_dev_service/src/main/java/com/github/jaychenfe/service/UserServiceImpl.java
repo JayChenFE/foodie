@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users createUser(UserBO userBO) {
+    public UserVO createUser(UserBO userBO) {
         Users users = usersMapping.userBoToUser(userBO);
         users.setId(sid.nextShort());
         users.setPassword(Md5Utils.getMd5Str(userBO.getPassword()));
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         users.setSex(Sex.secret.type);
 
         usersMapper.insert(users);
-        return users;
+        return usersMapping.userToUserVO(users);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
         userCriteria.andEqualTo("username", username);
         userCriteria.andEqualTo("password", password);
 
-        Users user = usersMapper.selectOneByExample(userExample);
-        UserVO userVO = usersMapping.userToUserVO(user);
+        Users users = usersMapper.selectOneByExample(userExample);
+        UserVO userVO = usersMapping.userToUserVO(users);
 
         return Optional.of(userVO);
     }

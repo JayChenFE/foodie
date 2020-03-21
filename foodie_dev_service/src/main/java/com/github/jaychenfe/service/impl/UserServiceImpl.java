@@ -1,4 +1,4 @@
-package com.github.jaychenfe.service;
+package com.github.jaychenfe.service.impl;
 
 import com.github.jaychenfe.enmus.Sex;
 import com.github.jaychenfe.mapper.UsersMapper;
@@ -6,6 +6,7 @@ import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.pojo.mapping.UsersMapping;
 import com.github.jaychenfe.pojo.vo.UserVO;
+import com.github.jaychenfe.service.UserService;
 import com.github.jaychenfe.utils.Md5Utils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;

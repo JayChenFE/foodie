@@ -1,7 +1,7 @@
 package com.github.jaychenfe.controller;
 
-import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
+import com.github.jaychenfe.pojo.vo.UserVO;
 import com.github.jaychenfe.service.UserService;
 import com.github.jaychenfe.utils.ApiResponse;
 import com.github.jaychenfe.utils.CookieUtils;
@@ -56,7 +56,9 @@ public class PassportController {
 
     @ApiOperation(value = "用户注册", notes = "用户注册")
     @PostMapping("/register")
-    public ApiResponse register(@RequestBody UserBO userBO) {
+    public ApiResponse register(@RequestBody UserBO userBO,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
 
 
         String username = userBO.getUsername();
@@ -85,9 +87,12 @@ public class PassportController {
             return ApiResponse.errorMsg("两次输入密码不一致");
         }
 
-        Users user = userService.createUser(userBO);
+        UserVO userVO = userService.createUser(userBO);
 
-        return ApiResponse.ok(user);
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(userVO), true);
+
+        return ApiResponse.ok(userVO);
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录")

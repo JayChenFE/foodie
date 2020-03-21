@@ -1,6 +1,5 @@
 package com.github.jaychenfe.service;
 
-import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.pojo.vo.UserVO;
 
@@ -25,7 +24,7 @@ public interface UserService {
      * @param userBO userBO
      * @return 新创建的用户
      */
-    Users createUser(UserBO userBO);
+    UserVO createUser(UserBO userBO);
 
     /**
      * 检查用户名和密码是否匹配,用于登录

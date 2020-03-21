@@ -118,4 +118,15 @@ public class PassportController {
                 .orElse(ApiResponse.errorMsg("用户名或密码错误"));
     }
 
+    @ApiOperation(value = "用户退出登录", notes = "用户退出登录")
+    @PostMapping("/logout")
+    public ApiResponse logout(HttpServletRequest request,
+                              HttpServletResponse response) {
+
+        // 清除用户的相关信息的cookie
+        CookieUtils.deleteCookie(request, response, "user");
+
+        return ApiResponse.ok();
+    }
+
 }

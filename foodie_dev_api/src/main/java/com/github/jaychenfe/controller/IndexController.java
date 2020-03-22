@@ -30,6 +30,7 @@ public class IndexController {
     public IndexController(CarouselService carouselService, CategoryService categoryService) {
         this.carouselService = carouselService;
         this.categoryService = categoryService;
+
     }
 
     @ApiOperation(value = "轮播图", notes = "轮播图")
@@ -38,6 +39,7 @@ public class IndexController {
         List<Carousel> list = carouselService.queryAll(YesOrNo.YES.type);
         return ApiResponse.ok(list);
     }
+
 
     /**
      * 首页分类展示需求：

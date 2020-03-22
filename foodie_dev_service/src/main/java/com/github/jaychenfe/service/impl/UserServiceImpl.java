@@ -11,6 +11,8 @@ import com.github.jaychenfe.utils.Md5Utils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Optional;
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
         this.sid = sid;
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
     public boolean queryUsernameIsExist(String username) {
         Example userExample = new Example(Users.class);
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
         return result != null;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public UserVO createUser(UserBO userBO) {
         Users users = usersMapping.userBoToUser(userBO);
@@ -55,6 +59,7 @@ public class UserServiceImpl implements UserService {
         return usersMapping.userToUserVO(users);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
     public Optional<UserVO> queryUserForLogin(String username, String password) {
         Example userExample = new Example(Users.class);

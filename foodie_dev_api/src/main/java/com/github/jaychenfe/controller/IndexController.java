@@ -4,6 +4,7 @@ import com.github.jaychenfe.enmus.YesOrNo;
 import com.github.jaychenfe.pojo.Carousel;
 import com.github.jaychenfe.pojo.Category;
 import com.github.jaychenfe.pojo.vo.CategoryVO;
+import com.github.jaychenfe.pojo.vo.NewItemsVO;
 import com.github.jaychenfe.service.CarouselService;
 import com.github.jaychenfe.service.CategoryService;
 import com.github.jaychenfe.utils.ApiResponse;
@@ -67,6 +68,20 @@ public class IndexController {
         }
 
         List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
+        return ApiResponse.ok(list);
+    }
+
+    @ApiOperation(value = "查询每个一级分类下的最新6条商品数据", notes = "查询每个一级分类下的最新6条商品数据")
+    @GetMapping("/sixNewItems/{rootCatId}")
+    public ApiResponse sixNewItems(
+            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+            @PathVariable Integer rootCatId) {
+
+        if (rootCatId == null) {
+            return ApiResponse.errorMsg("分类不存在");
+        }
+
+        List<NewItemsVO> list = categoryService.getSixNewItemsLazy(rootCatId);
         return ApiResponse.ok(list);
     }
 

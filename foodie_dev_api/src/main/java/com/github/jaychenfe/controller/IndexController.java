@@ -30,7 +30,6 @@ public class IndexController {
     public IndexController(CarouselService carouselService, CategoryService categoryService) {
         this.carouselService = carouselService;
         this.categoryService = categoryService;
-
     }
 
     @ApiOperation(value = "轮播图", notes = "轮播图")

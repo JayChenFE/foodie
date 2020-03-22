@@ -3,13 +3,16 @@ package com.github.jaychenfe.controller;
 import com.github.jaychenfe.enmus.YesOrNo;
 import com.github.jaychenfe.pojo.Carousel;
 import com.github.jaychenfe.pojo.Category;
+import com.github.jaychenfe.pojo.vo.CategoryVO;
 import com.github.jaychenfe.service.CarouselService;
 import com.github.jaychenfe.service.CategoryService;
 import com.github.jaychenfe.utils.ApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,4 +56,18 @@ public class IndexController {
         List<Category> list = categoryService.queryAllRootLevelCat();
         return ApiResponse.ok(list);
     }
+
+    @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类")
+    @GetMapping("/subCat/{rootCatId}")
+    public ApiResponse subCat(@ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+                              @PathVariable Integer rootCatId) {
+
+        if (rootCatId == null) {
+            return ApiResponse.errorMsg("分类不存在");
+        }
+
+        List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
+        return ApiResponse.ok(list);
+    }
+
 }

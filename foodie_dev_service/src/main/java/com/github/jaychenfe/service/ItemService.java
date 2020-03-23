@@ -5,6 +5,7 @@ import com.github.jaychenfe.pojo.Items;
 import com.github.jaychenfe.pojo.ItemsImg;
 import com.github.jaychenfe.pojo.ItemsParam;
 import com.github.jaychenfe.pojo.ItemsSpec;
+import com.github.jaychenfe.pojo.vo.CommentLevelCountsVO;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface ItemService {
      * @param itemId 商品id
      * @return 商品规格
      */
-     List<ItemsSpec> queryItemSpecList(String itemId);
+    List<ItemsSpec> queryItemSpecList(String itemId);
 
     /**
      * 根据商品id查询商品参数
@@ -40,5 +41,13 @@ public interface ItemService {
      * @param itemId 商品id
      * @return 商品规格
      */
-     ItemsParam queryItemParam(String itemId);
+    ItemsParam queryItemParam(String itemId);
+
+    /**
+     * 根据商品id查询商品的评价等级数量
+     *
+     * @param itemId 商品id
+     * @return 评价等级数量
+     */
+    CommentLevelCountsVO queryCommentCounts(String itemId);
 }

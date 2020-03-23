@@ -61,8 +61,7 @@ public interface ItemService {
      * @param pageSize 每页大小
      * @return 分页评论
      */
-    PagedGridResult queryPagedComments(String itemId, Integer level,
-                                       Integer page, Integer pageSize);
+    PagedGridResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize);
 
     /**
      * 搜索商品列表
@@ -73,7 +72,18 @@ public interface ItemService {
      * @param pageSize 每页大小
      * @return 商品搜索结果
      */
-    PagedGridResult searchItems(String keywords, String sort,
-                                Integer page, Integer pageSize);
+    PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
+
+
+    /**
+     * 根据分类id搜索商品列表
+     *
+     * @param catId    分类id
+     * @param sort     排序方式
+     * @param page     当前页
+     * @param pageSize 每页大小
+     * @return 商品搜索结果
+     */
+    PagedGridResult searchItems(Integer catId, String sort, Integer page, Integer pageSize);
 
 }

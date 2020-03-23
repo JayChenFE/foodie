@@ -4,9 +4,6 @@ import com.github.jaychenfe.pojo.Items;
 import com.github.jaychenfe.pojo.ItemsImg;
 import com.github.jaychenfe.pojo.ItemsParam;
 import com.github.jaychenfe.pojo.ItemsSpec;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 

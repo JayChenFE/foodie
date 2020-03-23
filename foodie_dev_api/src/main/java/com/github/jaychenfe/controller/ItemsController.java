@@ -37,7 +37,7 @@ public class ItemsController extends BaseController {
         this.itemService = itemService;
     }
 
-    @ApiOperation(value = "查询商品详情", notes = "查询商品详情", httpMethod = "GET")
+    @ApiOperation(value = "查询商品详情", notes = "查询商品详情")
     @GetMapping("/info/{itemId}")
     public ApiResponse info(@ApiParam(name = "itemId", value = "商品id", required = true)
                             @PathVariable String itemId) {
@@ -60,7 +60,7 @@ public class ItemsController extends BaseController {
         return ApiResponse.ok(itemInfoVO);
     }
 
-    @ApiOperation(value = "查询商品评价等级", notes = "查询商品评价等级", httpMethod = "GET")
+    @ApiOperation(value = "查询商品评价等级", notes = "查询商品评价等级")
     @GetMapping("/commentLevel")
     public ApiResponse commentLevel(
             @ApiParam(name = "itemId", value = "商品id", required = true)
@@ -75,7 +75,7 @@ public class ItemsController extends BaseController {
         return ApiResponse.ok(countsVO);
     }
 
-    @ApiOperation(value = "查询商品评论", notes = "查询商品评论", httpMethod = "GET")
+    @ApiOperation(value = "查询商品评论", notes = "查询商品评论")
     @GetMapping("/comments")
     public ApiResponse comments(
             @ApiParam(name = "itemId", value = "商品id", required = true)
@@ -101,6 +101,38 @@ public class ItemsController extends BaseController {
 
         PagedGridResult grid = itemService.queryPagedComments(itemId,
                 level,
+                page,
+                pageSize);
+
+        return ApiResponse.ok(grid);
+    }
+
+    @ApiOperation(value = "搜索商品列表", notes = "搜索商品列表")
+    @GetMapping("/search")
+    public ApiResponse search(
+            @ApiParam(name = "keywords", value = "关键字", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "排序", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
+            @RequestParam Integer pageSize) {
+
+        if (StringUtils.isBlank(keywords)) {
+            return ApiResponse.errorMsg(null);
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
+
+        PagedGridResult grid = itemService.searchItems(keywords,
+                sort,
                 page,
                 pageSize);
 

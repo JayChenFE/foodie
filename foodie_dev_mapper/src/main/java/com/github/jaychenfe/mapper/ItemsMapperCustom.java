@@ -1,6 +1,7 @@
 package com.github.jaychenfe.mapper;
 
 import com.github.jaychenfe.pojo.vo.ItemCommentVO;
+import com.github.jaychenfe.pojo.vo.SearchItemsVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,5 +19,13 @@ public interface ItemsMapperCustom {
      * @return 商品评论列表
      */
     List<ItemCommentVO> queryItemComments(@Param("paramsMap") Map<String, Object> map);
+
+    /**
+     * 搜索商品列表
+     *
+     * @param map 参数
+     * @return 搜索商品结果
+     */
+    List<SearchItemsVO> searchItems(@Param("paramsMap") Map<String, Object> map);
 
 }

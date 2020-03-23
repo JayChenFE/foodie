@@ -1,9 +1,5 @@
 package com.github.jaychenfe.pojo.vo;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.util.List;
 
 /**

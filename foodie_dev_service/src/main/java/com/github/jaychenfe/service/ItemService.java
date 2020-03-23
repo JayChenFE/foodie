@@ -6,6 +6,7 @@ import com.github.jaychenfe.pojo.ItemsImg;
 import com.github.jaychenfe.pojo.ItemsParam;
 import com.github.jaychenfe.pojo.ItemsSpec;
 import com.github.jaychenfe.pojo.vo.CommentLevelCountsVO;
+import com.github.jaychenfe.utils.PagedGridResult;
 
 import java.util.List;
 
@@ -50,4 +51,16 @@ public interface ItemService {
      * @return 评价等级数量
      */
     CommentLevelCountsVO queryCommentCounts(String itemId);
+
+    /**
+     * 根据商品id查询商品的评价（分页）
+     *
+     * @param itemId 商品id
+     * @param level  评价等级
+     * @param page 当前页
+     * @param pageSize 每页大小
+     * @return 分页评论
+     */
+    PagedGridResult queryPagedComments(String itemId, Integer level,
+                                       Integer page, Integer pageSize);
 }

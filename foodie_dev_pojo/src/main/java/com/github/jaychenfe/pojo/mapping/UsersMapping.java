@@ -27,6 +27,6 @@ public interface UsersMapping {
     @Mapping(target = "updatedTime", expression = "java(new Date())")
     Users userBoToUser(UserBO userBO);
 
-    UserVO  userToUserVO(Users Users);
+    UserVO userToUserVO(Users Users);
 
 }

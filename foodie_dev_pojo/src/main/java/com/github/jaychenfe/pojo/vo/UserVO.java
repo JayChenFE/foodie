@@ -7,9 +7,18 @@ import java.util.Date;
  */
 
 public class UserVO {
+    private  String id;
     private String username;
     private String face;
     private Date birthday;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -38,7 +47,8 @@ public class UserVO {
     @Override
     public String toString() {
         return "UserVO{" +
-                "username='" + username + '\'' +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
                 ", face='" + face + '\'' +
                 ", birthday=" + birthday +
                 '}';

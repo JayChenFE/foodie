@@ -15,6 +15,7 @@ import com.github.jaychenfe.pojo.ItemsSpec;
 import com.github.jaychenfe.pojo.vo.CommentLevelCountsVO;
 import com.github.jaychenfe.pojo.vo.ItemCommentVO;
 import com.github.jaychenfe.pojo.vo.SearchItemsVO;
+import com.github.jaychenfe.pojo.vo.ShopCartVO;
 import com.github.jaychenfe.service.ItemService;
 import com.github.jaychenfe.utils.DesensitizationUtil;
 import com.github.jaychenfe.utils.PagedGridResult;
@@ -29,6 +30,8 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author jaychenfe
@@ -156,6 +159,16 @@ public class ItemServiceImpl implements ItemService {
         List<SearchItemsVO> list = itemsMapperCustom.searchItemsByThirdCat(map);
 
         return setterPagedGrid(list, page);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
+    @Override
+    public List<ShopCartVO> queryItemsBySpecIds(String specIds) {
+
+        List<String> specIdsList = Stream.of(specIds.split(","))
+                .collect(Collectors.toList());
+
+        return itemsMapperCustom.queryItemsBySpecIds(specIdsList);
     }
 
 

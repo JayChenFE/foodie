@@ -6,6 +6,7 @@ import com.github.jaychenfe.pojo.ItemsParam;
 import com.github.jaychenfe.pojo.ItemsSpec;
 import com.github.jaychenfe.pojo.vo.CommentLevelCountsVO;
 import com.github.jaychenfe.pojo.vo.ItemInfoVO;
+import com.github.jaychenfe.pojo.vo.ShopCartVO;
 import com.github.jaychenfe.service.ItemService;
 import com.github.jaychenfe.utils.ApiResponse;
 import com.github.jaychenfe.utils.PagedGridResult;
@@ -160,5 +161,26 @@ public class ItemsController extends BaseController {
         PagedGridResult grid = itemService.searchItems(catId, sort, page, pageSize);
 
         return ApiResponse.ok(grid);
+    }
+
+    /**
+     * 用于用户长时间未登录网站，刷新购物车中的数据（主要是商品价格），类似京东淘宝
+     *
+     * @param itemSpecIds 商品规格拼接
+     * @return ApiResponse
+     */
+    @ApiOperation(value = "根据商品规格ids查找最新的商品数据", notes = "根据商品规格ids查找最新的商品数据", httpMethod = "GET")
+    @GetMapping("/refresh")
+    public ApiResponse refresh(
+            @ApiParam(name = "itemSpecIds", value = "拼接的规格ids", required = true, example = "1001,1003,1005")
+            @RequestParam String itemSpecIds) {
+
+        if (StringUtils.isBlank(itemSpecIds)) {
+            return ApiResponse.ok();
+        }
+
+        List<ShopCartVO> list = itemService.queryItemsBySpecIds(itemSpecIds);
+
+        return ApiResponse.ok(list);
     }
 }

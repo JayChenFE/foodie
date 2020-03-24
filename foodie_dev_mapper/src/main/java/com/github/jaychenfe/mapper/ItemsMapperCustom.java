@@ -2,6 +2,7 @@ package com.github.jaychenfe.mapper;
 
 import com.github.jaychenfe.pojo.vo.ItemCommentVO;
 import com.github.jaychenfe.pojo.vo.SearchItemsVO;
+import com.github.jaychenfe.pojo.vo.ShopCartVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -35,5 +36,13 @@ public interface ItemsMapperCustom {
      * @return 搜索商品结果
      */
     List<SearchItemsVO> searchItemsByThirdCat(@Param("paramsMap") Map<String, Object> map);
+
+
+    /**
+     * 根据规格id列表查找购物车信息
+      * @param specIdsList 规格id列表
+     * @return 购物车信息
+     */
+    List<ShopCartVO> queryItemsBySpecIds(@Param("paramsList") List specIdsList);
 
 }

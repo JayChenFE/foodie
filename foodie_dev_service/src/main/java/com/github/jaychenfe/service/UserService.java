@@ -3,8 +3,6 @@ package com.github.jaychenfe.service;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.pojo.vo.UserVO;
 
-import java.util.Optional;
-
 /**
  * @author jaychenfe
  */
@@ -33,6 +31,6 @@ public interface UserService {
      * @param password 密码
      * @return 用户信息
      */
-    Optional<UserVO> queryUserForLogin(String username, String password);
+    UserVO queryUserForLogin(String username, String password);
 }
 

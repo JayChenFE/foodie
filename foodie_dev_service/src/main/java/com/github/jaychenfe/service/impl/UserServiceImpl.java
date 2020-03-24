@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.Optional;
-
 /**
  * @author jaychenfe
  */
@@ -61,15 +59,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
-    public Optional<UserVO> queryUserForLogin(String username, String password) {
+    public UserVO queryUserForLogin(String username, String password) {
         Example userExample = new Example(Users.class);
         Example.Criteria userCriteria = userExample.createCriteria();
         userCriteria.andEqualTo("username", username);
         userCriteria.andEqualTo("password", password);
 
         Users users = usersMapper.selectOneByExample(userExample);
-        UserVO userVO = usersMapping.userToUserVO(users);
 
-        return Optional.of(userVO);
+        return usersMapping.userToUserVO(users);
     }
 }

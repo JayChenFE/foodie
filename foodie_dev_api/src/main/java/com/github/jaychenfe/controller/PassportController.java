@@ -109,13 +109,14 @@ public class PassportController {
             return ApiResponse.errorMsg("用户名或密码不能为空");
         }
 
-        return userService.queryUserForLogin(username, Md5Utils.getMd5Str(password))
-                .map(userVO -> {
-                    CookieUtils.setCookie(request, response, "user",
-                            JsonUtils.objectToJson(userVO), true);
-                    return ApiResponse.ok(userVO);
-                })
-                .orElse(ApiResponse.errorMsg("用户名或密码错误"));
+        UserVO userVO = userService.queryUserForLogin(username, Md5Utils.getMd5Str(password));
+        if (userVO == null) {
+            return ApiResponse.errorMsg("用户名或密码错误");
+        }
+
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVO), true);
+        return ApiResponse.ok(userVO);
+
     }
 
     @ApiOperation(value = "用户退出登录", notes = "用户退出登录")

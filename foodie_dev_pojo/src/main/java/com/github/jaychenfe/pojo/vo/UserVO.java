@@ -7,8 +7,9 @@ import java.util.Date;
  */
 
 public class UserVO {
-    private  String id;
+    private String id;
     private String username;
+    private String nickname;
     private String face;
     private Date birthday;
 
@@ -26,6 +27,14 @@ public class UserVO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getFace() {
@@ -49,6 +58,7 @@ public class UserVO {
         return "UserVO{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
+                ", nickname='" + nickname + '\'' +
                 ", face='" + face + '\'' +
                 ", birthday=" + birthday +
                 '}';

@@ -40,9 +40,20 @@ public interface ItemsMapperCustom {
 
     /**
      * 根据规格id列表查找购物车信息
-      * @param specIdsList 规格id列表
+     *
+     * @param specIdsList 规格id列表
      * @return 购物车信息
      */
     List<ShopCartVO> queryItemsBySpecIds(@Param("paramsList") List specIdsList);
+
+    /**
+     * 扣除库存
+     *
+     * @param specId 规格id
+     * @param pendingCounts 扣除数量
+     * @return 执行数量
+     */
+    int decreaseItemSpecStock(@Param("specId") String specId,
+                              @Param("pendingCounts") int pendingCounts);
 
 }

@@ -11,6 +11,9 @@ import com.github.jaychenfe.utils.PagedGridResult;
 
 import java.util.List;
 
+/**
+ * @author jaychenfe
+ */
 public interface ItemService {
 
     /**
@@ -94,5 +97,29 @@ public interface ItemService {
      * @return 购物车信息
      */
     List<ShopCartVO> queryItemsBySpecIds(String specIds);
+
+    /**
+     * 根据商品规格id获取规格对象的具体信息
+     *
+     * @param specId 商品规格id
+     * @return 商品规格
+     */
+    ItemsSpec queryItemSpecById(String specId);
+
+    /**
+     * 根据商品id获得商品图片主图url
+     *
+     * @param itemId 商品id
+     * @return 图片主图url
+     */
+    String queryItemMainImgById(String itemId);
+
+    /**
+     * 减少库存
+     *
+     * @param specId 商品规格id
+     * @param buyCounts 购买数量
+     */
+    void decreaseItemSpecStock(String specId, int buyCounts);
 
 }

@@ -18,6 +18,7 @@ import com.github.jaychenfe.pojo.vo.OrderVO;
 import com.github.jaychenfe.service.AddressService;
 import com.github.jaychenfe.service.ItemService;
 import com.github.jaychenfe.service.OrderService;
+import com.github.jaychenfe.utils.DateUtil;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
+/**
+ * @author jaychenfe
+ */
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -86,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
         return orderVO;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public void updateOrderStatus(String orderId, Integer orderStatus) {
 
@@ -98,10 +103,39 @@ public class OrderServiceImpl implements OrderService {
         orderStatusMapper.updateByPrimaryKeySelective(paidStatus);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
     public OrderStatus queryOrderStatusInfo(String orderId) {
         return orderStatusMapper.selectByPrimaryKey(orderId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Override
+    public void closeOrder() {
+
+        // 查询所有未付款订单，判断时间是否超时（1天），超时则关闭交易
+        OrderStatus queryOrder = new OrderStatus();
+        queryOrder.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        List<OrderStatus> list = orderStatusMapper.select(queryOrder);
+        for (OrderStatus os : list) {
+            // 获得订单创建时间
+            Date createdTime = os.getCreatedTime();
+            // 和当前时间进行对比
+            int days = DateUtil.daysBetween(createdTime, new Date());
+            if (days >= 1) {
+                // 超过1天，关闭订单
+                doCloseOrder(os.getOrderId());
+            }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    void doCloseOrder(String orderId) {
+        OrderStatus close = new OrderStatus();
+        close.setOrderId(orderId);
+        close.setOrderStatus(OrderStatusEnum.CLOSE.type);
+        close.setCloseTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(close);
     }
 
     private MerchantOrdersVO createMerchantOrdersVO(String userId, Integer payMethod, int postAmount, String orderId, int realPayAmount) {
@@ -113,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
         return merchantOrdersVO;
     }
 
-    private void saveOrderStatus(String orderId) {
+     void saveOrderStatus(String orderId) {
         OrderStatus waitPayOrderStatus = new OrderStatus();
         waitPayOrderStatus.setOrderId(orderId);
         waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
@@ -121,7 +155,8 @@ public class OrderServiceImpl implements OrderService {
         orderStatusMapper.insert(waitPayOrderStatus);
     }
 
-    private int saveNewOrderAndGetRealPayAmount(String itemSpecIds, String orderId, Orders newOrder) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    int saveNewOrderAndGetRealPayAmount(String itemSpecIds, String orderId, Orders newOrder) {
         String[] itemSpecIdArr = itemSpecIds.split(",");
         // 商品原价累计
         int totalAmount = 0;

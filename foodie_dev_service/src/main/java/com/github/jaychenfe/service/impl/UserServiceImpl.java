@@ -76,6 +76,9 @@ public class UserServiceImpl implements UserService {
         userCriteria.andEqualTo("password", password);
 
         Users users = usersMapper.selectOneByExample(userExample);
+        if (users == null) {
+            return null;
+        }
 
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(users, userVO);

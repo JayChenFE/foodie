@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * @author jaychenfe
+ */
 @Api(value = "地址相关", tags = {"地址相关的api接口"})
 @RequestMapping("address")
 @RestController
@@ -30,6 +33,8 @@ public class AddressController {
      * 4. 修改收货地址
      * 5. 设置默认地址
      */
+    private static int MAX_RECEIVER_NAME_LENGTH = 12;
+    private static int MOBILE_LENGTH = 12;
 
     private AddressService addressService;
 
@@ -56,7 +61,7 @@ public class AddressController {
     public ApiResponse add(@RequestBody AddressBO addressBO) {
 
         ApiResponse checkRes = checkAddress(addressBO);
-        if (checkRes.getStatus() != 200) {
+        if (!checkRes.isOk()) {
             return checkRes;
         }
 
@@ -70,7 +75,7 @@ public class AddressController {
         if (StringUtils.isBlank(receiver)) {
             return ApiResponse.errorMsg("收货人不能为空");
         }
-        if (receiver.length() > 12) {
+        if (receiver.length() > MAX_RECEIVER_NAME_LENGTH) {
             return ApiResponse.errorMsg("收货人姓名不能太长");
         }
 
@@ -78,7 +83,7 @@ public class AddressController {
         if (StringUtils.isBlank(mobile)) {
             return ApiResponse.errorMsg("收货人手机号不能为空");
         }
-        if (mobile.length() != 11) {
+        if (mobile.length() != MOBILE_LENGTH) {
             return ApiResponse.errorMsg("收货人手机号长度不正确");
         }
         boolean isMobileOk = MobileEmailUtils.checkMobileIsOk(mobile);
@@ -109,7 +114,7 @@ public class AddressController {
         }
 
         ApiResponse checkRes = checkAddress(addressBO);
-        if (checkRes.getStatus() != 200) {
+        if (!checkRes.isOk()) {
             return checkRes;
         }
 

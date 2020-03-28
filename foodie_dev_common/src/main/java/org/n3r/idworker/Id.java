@@ -2,12 +2,15 @@ package org.n3r.idworker;
 
 import org.n3r.idworker.strategy.DefaultWorkerIdStrategy;
 
+/**
+ * @author jaychenfe
+ */
 public class Id {
     private static WorkerIdStrategy workerIdStrategy;
     private static IdWorker idWorker;
 
     static {
-        configure(DefaultWorkerIdStrategy.instance);
+        configure(DefaultWorkerIdStrategy.INSTANCE);
     }
 
     public static synchronized void configure(WorkerIdStrategy custom) {

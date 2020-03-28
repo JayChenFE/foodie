@@ -4,6 +4,9 @@ package com.github.jaychenfe.service.center;
 import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.center.CenterUserBO;
 
+/**
+ * @author jaychenfe
+ */
 public interface CenterUserService {
 
     /**

@@ -16,6 +16,8 @@ public class ServiceLogAspect {
 
     public static final Logger log =
             LoggerFactory.getLogger(ServiceLogAspect.class);
+    private static final int TAKE_TIME_3000 = 3000;
+    private static final int TAKE_TIME_2000 = 2000;
 
     /**
      * AOP通知：
@@ -62,9 +64,9 @@ public class ServiceLogAspect {
     }
 
     private void logTakeTime(long takeTime) {
-        if (takeTime > 3000) {
+        if (takeTime > TAKE_TIME_3000) {
             log.error("====== 执行结束，耗时：{} 毫秒 ======", takeTime);
-        } else if (takeTime > 2000) {
+        } else if (takeTime > TAKE_TIME_2000) {
             log.warn("====== 执行结束，耗时：{} 毫秒 ======", takeTime);
         } else {
             log.info("====== 执行结束，耗时：{} 毫秒 ======", takeTime);

@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * @author jaychenfe
+ */
 @Table(name = "order_items")
 public class OrderItems {
     /**

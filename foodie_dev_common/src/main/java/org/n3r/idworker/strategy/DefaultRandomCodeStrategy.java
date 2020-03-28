@@ -13,6 +13,9 @@ import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.Queue;
 
+/**
+ * @author jaychenfe
+ */
 public class DefaultRandomCodeStrategy implements RandomCodeStrategy {
     public static final int MAX_BITS = 1000000;
 
@@ -184,9 +187,9 @@ public class DefaultRandomCodeStrategy implements RandomCodeStrategy {
 
     private int max(int size) {
         switch (size) {
-            case 1: // fall through
-            case 2: // fall through
-            case 3: // fall through
+            case 1:
+            case 2:
+            case 3:
             case 4:
                 return 10000;
             case 5:

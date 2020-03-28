@@ -77,7 +77,7 @@ public class OrdersController extends BaseController {
         // 3. 向支付中心发送当前订单，用于保存支付中心的订单数据
         ApiResponse paymentResult = sendMerchantOrders(orderVO);
         assert paymentResult != null;
-        if (paymentResult.getStatus() != 200) {
+        if (!paymentResult.isOk()) {
             logger.error("发送错误：{}", paymentResult.getMsg());
             return ApiResponse.errorMsg("支付中心订单创建失败，请联系管理员！");
         }

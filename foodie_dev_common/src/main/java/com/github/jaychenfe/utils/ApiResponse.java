@@ -2,6 +2,7 @@ package com.github.jaychenfe.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
 
 /**
  * @author jaychenfe
@@ -66,7 +67,7 @@ public class ApiResponse {
         return new ApiResponse(555, msg, null);
     }
 
-    public static ApiResponse errorUserQQ(String msg) {
+    public static ApiResponse errorUserQq(String msg) {
         return new ApiResponse(556, msg, null);
     }
 
@@ -93,8 +94,8 @@ public class ApiResponse {
         this.data = data;
     }
 
-    public Boolean isOK() {
-        return this.status == 200;
+    public Boolean isOk() {
+        return this.status == HttpStatus.OK.value();
     }
 
     public Integer getStatus() {

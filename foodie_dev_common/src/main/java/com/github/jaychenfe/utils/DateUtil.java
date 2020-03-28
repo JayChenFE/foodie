@@ -12,17 +12,20 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.TimeZone;
 
+/**
+ * @author jaychenfe
+ */
 public class DateUtil {
 
     /**
      * Base ISO 8601 Date format yyyyMMdd i.e., 20021225 for the 25th day of December in the year 2002
      */
-    public static final String ISO_DATE_FORMAT = "yyyyMMdd";
+    public static String ISO_DATE_FORMAT = "yyyyMMdd";
 
     /**
      * Expanded ISO 8601 Date format yyyy-MM-dd i.e., 2002-12-25 for the 25th day of December in the year 2002
      */
-    public static final String ISO_EXPANDED_DATE_FORMAT = "yyyy-MM-dd";
+    public static String ISO_EXPANDED_DATE_FORMAT = "yyyy-MM-dd";
 
     /**
      * yyyy-MM-dd hh:mm:ss
@@ -38,6 +41,8 @@ public class DateUtil {
 
     private static Random random = new Random();
     private static final int ID_BYTES = 10;
+    private static final int MONTH_OF_YEAR = 12;
+
 
     public static synchronized String generateId() {
         StringBuilder result = new StringBuilder();
@@ -48,9 +53,9 @@ public class DateUtil {
         return result.toString();
     }
 
-    protected static final float normalizedJulian(float JD) {
+    protected static float normalizedJulian(float julianDay) {
 
-        return Math.round(JD + 0.5f) - 0.5f;
+        return Math.round(julianDay + 0.5f) - 0.5f;
     }
 
     /**
@@ -58,10 +63,10 @@ public class DateUtil {
      * such that it matches the nearest half-integer (i.e., a julian date of 1.4 gets
      * changed to 1.5, and 0.9 gets changed to 0.5.)
      *
-     * @param JD the Julian date
+     * @param julianDay the Julian date
      * @return the Gregorian date
      */
-    public static final Date toDate(float JD) {
+    public static Date toDate(float julianDay) {
 
         /* To convert a Julian Day Number to a Gregorian date, assume that it is for 0 hours, Greenwich time (so
          * that it ends in 0.5). Do the following calculations, again dropping the fractional part of all
@@ -69,34 +74,36 @@ public class DateUtil {
          * Gregorian Proleptic Calendar, i.e., the calendar you get by extending the Gregorian
          * calendar backwards to years earlier than 1582. using the Gregorian leap year
          * rules. In particular, the method fails if Y<400. */
-        float Z = (normalizedJulian(JD)) + 0.5f;
-        float W = (int) ((Z - 1867216.25f) / 36524.25f);
-        float X = (int) (W / 4f);
-        float A = Z + 1 + W - X;
-        float B = A + 1524;
-        float C = (int) ((B - 122.1) / 365.25);
-        float D = (int) (365.25f * C);
-        float E = (int) ((B - D) / 30.6001);
-        float F = (int) (30.6001f * E);
-        int day = (int) (B - D - F);
-        int month = (int) (E - 1);
+        float z = (normalizedJulian(julianDay)) + 0.5f;
+        float w = (int) ((z - 1867216.25f) / 36524.25f);
+        float x = (int) (w / 4f);
+        float a = z + 1 + w - x;
+        float b = a + 1524;
+        float c = (int) ((b - 122.1) / 365.25);
+        float d = (int) (365.25f * c);
+        float e = (int) ((b - d) / 30.6001);
+        float f = (int) (30.6001f * e);
+        int day = (int) (b - d - f);
+        int month = (int) (e - 1);
 
-        if (month > 12) {
-            month = month - 12;
+        if (month > MONTH_OF_YEAR) {
+            month = month - MONTH_OF_YEAR;
         }
 
-        int year = (int) (C - 4715); //(if Month is January or February) or C-4716 (otherwise)
+        //(if Month is January or February) or C-4716 (otherwise)
+        int year = (int) (c - 4715);
 
         if (month > 2) {
             year--;
         }
 
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month - 1); // damn 0 offsets
-        c.set(Calendar.DATE, day);
+        Calendar cc = Calendar.getInstance();
+        cc.set(Calendar.YEAR, year);
+        // damn 0 offsets
+        cc.set(Calendar.MONTH, month - 1);
+        cc.set(Calendar.DATE, day);
 
-        return c.getTime();
+        return cc.getTime();
     }
 
     /**
@@ -108,7 +115,7 @@ public class DateUtil {
      * @param late  the "second date"
      * @return the days between the two dates
      */
-    public static final int daysBetween(Date early, Date late) {
+    public static int daysBetween(Date early, Date late) {
 
         Calendar c1 = Calendar.getInstance();
         Calendar c2 = Calendar.getInstance();
@@ -127,7 +134,7 @@ public class DateUtil {
      * @param late  late
      * @return the days between two dates.
      */
-    public static final int daysBetween(Calendar early, Calendar late) {
+    public static int daysBetween(Calendar early, Calendar late) {
 
         return (int) (toJulian(late) - toJulian(early));
     }
@@ -141,19 +148,19 @@ public class DateUtil {
      * @param c a calendar instance
      * @return the julian day number
      */
-    public static final float toJulian(Calendar c) {
+    public static float toJulian(Calendar c) {
 
-        int Y = c.get(Calendar.YEAR);
-        int M = c.get(Calendar.MONTH);
-        int D = c.get(Calendar.DATE);
-        int A = Y / 100;
-        int B = A / 4;
-        int C = 2 - A + B;
-        float E = (int) (365.25f * (Y + 4716));
-        float F = (int) (30.6001f * (M + 1));
-        float JD = C + D + E + F - 1524.5f;
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DATE);
+        int a = year / 100;
+        int b = a / 4;
+        int cc = 2 - a + b;
+        float e = (int) (365.25f * (year + 4716));
+        float f = (int) (30.6001f * (month + 1));
+        float julianDay = cc + day + e + f - 1524.5f;
 
-        return JD;
+        return julianDay;
     }
 
     /**
@@ -165,7 +172,7 @@ public class DateUtil {
      * @param date date
      * @return the julian day number
      */
-    public static final float toJulian(Date date) {
+    public static float toJulian(Date date) {
 
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -180,8 +187,8 @@ public class DateUtil {
      * @param amount    amount
      * @return String
      */
-    public static final String dateIncrease(String isoString, String fmt,
-                                            int field, int amount) {
+    public static String dateIncrease(String isoString, String fmt,
+                                      int field, int amount) {
 
         try {
             Calendar cal = GregorianCalendar.getInstance(TimeZone.getTimeZone(
@@ -207,8 +214,8 @@ public class DateUtil {
      * @return String
      * @throws ParseException if an unknown field value is given.
      */
-    public static final String roll(String isoString, String fmt, int field,
-                                    boolean up) throws ParseException {
+    public static String roll(String isoString, String fmt, int field,
+                              boolean up) throws ParseException {
 
         Calendar cal = GregorianCalendar.getInstance(TimeZone.getTimeZone(
                 "GMT"));
@@ -228,7 +235,7 @@ public class DateUtil {
      * @return String
      * @throws ParseException if an unknown field value is given.
      */
-    public static final String roll(String isoString, int field, boolean up) throws
+    public static String roll(String isoString, int field, boolean up) throws
             ParseException {
 
         return roll(isoString, DATETIME_PATTERN, field, up);
@@ -250,7 +257,7 @@ public class DateUtil {
             return null;
         }
 
-        DateFormat df = null;
+        DateFormat df;
 
         try {
 
@@ -275,7 +282,7 @@ public class DateUtil {
      * @return Timestamp
      */
     public static java.sql.Timestamp getCurrentTimestamp() {
-        return new java.sql.Timestamp(new Date().getTime());
+        return new java.sql.Timestamp(System.currentTimeMillis());
     }
 
     /**
@@ -471,10 +478,9 @@ public class DateUtil {
      * @return string
      */
     public static String getMonth(Date date) {
-        SimpleDateFormat formater = new SimpleDateFormat(
+        SimpleDateFormat formatter = new SimpleDateFormat(
                 "MM");
-        String cur_month = formater.format(date);
-        return cur_month;
+        return formatter.format(date);
     }
 
     /**
@@ -482,10 +488,9 @@ public class DateUtil {
      * @return string
      */
     public static String getDay(Date date) {
-        SimpleDateFormat formater = new SimpleDateFormat(
+        SimpleDateFormat formatter = new SimpleDateFormat(
                 "dd");
-        String cur_day = formater.format(date);
-        return cur_day;
+        return formatter.format(date);
     }
 
     public static int getDayInt(Date date) {

@@ -15,12 +15,15 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 
+/**
+ * @author jaychenfe
+ */
 public class DefaultWorkerIdStrategy implements WorkerIdStrategy {
     static long workerIdBits = 10L;
-    static long maxWorkerId = -1L ^ (-1L << workerIdBits);
+    static long maxWorkerId = ~(-1L << workerIdBits);
     static Random random = new SecureRandom();
 
-    public static final WorkerIdStrategy instance = new DefaultWorkerIdStrategy();
+    public static final WorkerIdStrategy INSTANCE = new DefaultWorkerIdStrategy();
 
     private final Properties props =
             Props.tryProperties("idworker-client.properties", Utils.DOT_IDWORKERS);
@@ -57,7 +60,8 @@ public class DefaultWorkerIdStrategy implements WorkerIdStrategy {
         }
         if (workerId < 0) {
             logger.warn("DANGEROUS!!! Try to use random worker id.");
-            workerId = tryToRandomOnIp(); // Try avoiding! it could cause duplicated
+            // Try avoiding! it could cause duplicated
+            workerId = tryToRandomOnIp();
         }
 
         if (workerId < 0) {
@@ -77,7 +81,8 @@ public class DefaultWorkerIdStrategy implements WorkerIdStrategy {
 
     @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     private void startSyncThread() {
-        new Thread(() -> syncWithWorkerIdServer()).start();
+        //noinspection AlibabaAvoidManuallyCreateThread
+        new Thread(this::syncWithWorkerIdServer).start();
     }
 
     private long increaseWithWorkerIdServer() {

@@ -20,15 +20,15 @@ import com.github.jaychenfe.pojo.vo.ShopCartVO;
 import com.github.jaychenfe.service.ItemService;
 import com.github.jaychenfe.utils.DesensitizationUtil;
 import com.github.jaychenfe.utils.PagedGridResult;
+import com.github.jaychenfe.utils.PagedGridUtils;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public PagedGridResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize) {
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
         map.put("itemId", itemId);
         map.put("level", level);
 
@@ -132,34 +132,34 @@ public class ItemServiceImpl implements ItemService {
             vo.setNickname(DesensitizationUtil.commonDisplay(vo.getNickname()));
         }
 
-        return setterPagedGrid(list, page);
+        return PagedGridUtils.setterPagedGrid(list, page);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
     public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
         map.put("keywords", keywords);
         map.put("sort", sort);
 
         PageHelper.startPage(page, pageSize);
         List<SearchItemsVO> list = itemsMapperCustom.searchItems(map);
 
-        return setterPagedGrid(list, page);
+        return PagedGridUtils.setterPagedGrid(list, page);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
     public PagedGridResult searchItems(Integer catId, String sort, Integer page, Integer pageSize) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
         map.put("catId", catId);
         map.put("sort", sort);
 
         PageHelper.startPage(page, pageSize);
         List<SearchItemsVO> list = itemsMapperCustom.searchItemsByThirdCat(map);
 
-        return setterPagedGrid(list, page);
+        return PagedGridUtils.setterPagedGrid(list, page);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
@@ -216,16 +216,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-
-    private PagedGridResult setterPagedGrid(List<?> list, Integer page) {
-        PageInfo<?> pageList = new PageInfo<>(list);
-        PagedGridResult grid = new PagedGridResult();
-        grid.setPage(page);
-        grid.setRows(list);
-        grid.setTotal(pageList.getPages());
-        grid.setRecords(pageList.getTotal());
-        return grid;
-    }
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     Integer getCommentCounts(String itemId, Integer level) {

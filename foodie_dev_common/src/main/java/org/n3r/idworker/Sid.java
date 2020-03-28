@@ -7,13 +7,16 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * @author jaychenfe
+ */
 @Component
 public class Sid {
     private static WorkerIdStrategy workerIdStrategy;
     private static IdWorker idWorker;
 
     static {
-        configure(DefaultWorkerIdStrategy.instance);
+        configure(DefaultWorkerIdStrategy.INSTANCE);
     }
 
 
@@ -40,8 +43,8 @@ public class Sid {
 
     public static String next() {
         long id = idWorker.nextId();
-        String yyMMdd = new SimpleDateFormat("yyMMdd").format(new Date());
-        return yyMMdd + String.format("%014d", id);
+        String formatter = new SimpleDateFormat("yyMMdd").format(new Date());
+        return formatter + String.format("%014d", id);
     }
 
 
@@ -50,7 +53,7 @@ public class Sid {
      */
     public String nextShort() {
         long id = idWorker.nextId();
-        String yyMMdd = new SimpleDateFormat("yyMMdd").format(new Date());
-        return yyMMdd + Utils.padLeft(Utils.encode(id), 10, '0');
+        String formatter = new SimpleDateFormat("yyMMdd").format(new Date());
+        return formatter + Utils.padLeft(Utils.encode(id), 10, '0');
     }
 }

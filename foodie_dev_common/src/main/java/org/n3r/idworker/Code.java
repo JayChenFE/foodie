@@ -2,6 +2,9 @@ package org.n3r.idworker;
 
 import org.n3r.idworker.strategy.DefaultRandomCodeStrategy;
 
+/**
+ * @author jaychenfe
+ */
 public class Code {
     private static RandomCodeStrategy strategy;
 

@@ -27,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
+/**
+ * @author jaychenfe
+ */
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -86,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
         return orderVO;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public void updateOrderStatus(String orderId, Integer orderStatus) {
 
@@ -98,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
         orderStatusMapper.updateByPrimaryKeySelective(paidStatus);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
     public OrderStatus queryOrderStatusInfo(String orderId) {
         return orderStatusMapper.selectByPrimaryKey(orderId);

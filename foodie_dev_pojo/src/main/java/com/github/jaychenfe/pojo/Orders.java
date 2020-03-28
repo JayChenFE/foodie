@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import java.util.Date;
 
+/**
+ * @author jaychenfe
+ */
 public class Orders {
     /**
      * 订单主键 同时也是订单编号

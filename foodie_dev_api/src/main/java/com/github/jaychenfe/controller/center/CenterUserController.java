@@ -9,6 +9,7 @@ import com.github.jaychenfe.utils.ApiResponse;
 import com.github.jaychenfe.utils.CookieUtils;
 import com.github.jaychenfe.utils.DateUtil;
 import com.github.jaychenfe.utils.JsonUtils;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +32,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,9 +87,7 @@ public class CenterUserController extends BaseController {
             // 获取文件的后缀名
             String suffix = fileNameArr[fileNameArr.length - 1];
 
-            if (!"png".equalsIgnoreCase(suffix) &&
-                    !"jpg".equalsIgnoreCase(suffix) &&
-                    !"jpeg".equalsIgnoreCase(suffix)) {
+            if (!isImageSuffixOk(suffix)) {
                 return ApiResponse.errorMsg("图片格式不正确！");
             }
 
@@ -145,6 +143,12 @@ public class CenterUserController extends BaseController {
         return ApiResponse.ok();
     }
 
+    private boolean isImageSuffixOk(String suffix) {
+        return "png".equalsIgnoreCase(suffix) ||
+                "jpg".equalsIgnoreCase(suffix) ||
+                "jpeg".equalsIgnoreCase(suffix);
+    }
+
 
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息", httpMethod = "POST")
     @PostMapping("update")
@@ -175,8 +179,9 @@ public class CenterUserController extends BaseController {
     }
 
     private Map<String, String> getErrors(BindingResult result) {
-        Map<String, String> map = new HashMap<>();
+
         List<FieldError> errorList = result.getFieldErrors();
+        Map<String, String> map = Maps.newHashMapWithExpectedSize(errorList.size());
         for (FieldError error : errorList) {
             // 发生验证错误所对应的某一个属性
             String errorField = error.getField();

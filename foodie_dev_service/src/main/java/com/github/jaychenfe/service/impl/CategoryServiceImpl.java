@@ -6,13 +6,13 @@ import com.github.jaychenfe.pojo.Category;
 import com.github.jaychenfe.pojo.vo.CategoryVO;
 import com.github.jaychenfe.pojo.vo.NewItemsVO;
 import com.github.jaychenfe.service.CategoryService;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<NewItemsVO> getSixNewItemsLazy(Integer rootCatId) {
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(1);
         map.put("rootCatId", rootCatId);
 
         return categoryMapperCustom.getSixNewItemsLazy(map);

@@ -4,6 +4,9 @@ import com.github.jaychenfe.pojo.OrderStatus;
 import com.github.jaychenfe.pojo.bo.SubmitOrderBO;
 import com.github.jaychenfe.pojo.vo.OrderVO;
 
+/**
+ * @author jaychenfe
+ */
 public interface OrderService {
 
     /**

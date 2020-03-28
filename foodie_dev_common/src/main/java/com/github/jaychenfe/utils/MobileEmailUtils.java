@@ -3,6 +3,9 @@ package com.github.jaychenfe.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author jaychenfe
+ */
 public class MobileEmailUtils {
 
     public static boolean checkMobileIsOk(String mobile) {
@@ -14,11 +17,7 @@ public class MobileEmailUtils {
     }
 
     public static boolean checkEmailIsOk(String email) {
-        boolean isMatch = true;
-        if (!email.matches("[\\w\\.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+")) {
-            isMatch = false;
-        }
-        return isMatch;
+        return email.matches("[\\w.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+");
     }
 }
 

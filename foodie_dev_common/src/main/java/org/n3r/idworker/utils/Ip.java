@@ -10,6 +10,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+/**
+ * @author jaychenfe
+ */
 public class Ip {
     static Logger logger = LoggerFactory.getLogger(Ip.class);
 

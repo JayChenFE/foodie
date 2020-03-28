@@ -3,6 +3,9 @@ package com.github.jaychenfe.pojo;
 import javax.persistence.Column;
 import javax.persistence.Id;
 
+/**
+ * @author jaychenfe
+ */
 public class Category {
     /**
      * 主键 分类id主键

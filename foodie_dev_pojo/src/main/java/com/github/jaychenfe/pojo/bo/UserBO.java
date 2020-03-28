@@ -40,6 +40,7 @@ public class UserBO {
         this.confirmPassword = confirmPassword;
     }
 
+    @Override
     public String toString() {
         return "UserBO(username=" + this.getUsername() + ", password=" + this.getPassword() + ", confirmPassword=" + this.getConfirmPassword() + ")";
     }

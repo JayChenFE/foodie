@@ -9,6 +9,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * @author jaychenfe
+ */
 public class Utils {
 
     public static final String DOT_IDWORKERS = ".idworkers";
@@ -95,7 +98,9 @@ public class Utils {
         return sb.reverse().toString();
     }
 
-    // all un-clearly-recognized letters are skiped.
+    /**
+     * all un-clearly-recognized letters are skiped.
+     */
     static String defaultRange = "0123456789ABCDFGHKMNPRSTWXYZ";
 
     public static String padLeft(String str, int size, char padChar) {

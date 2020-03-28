@@ -5,6 +5,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * @author jaychenfe
+ */
 @Table(name = "items_img")
 public class ItemsImg {
     /**

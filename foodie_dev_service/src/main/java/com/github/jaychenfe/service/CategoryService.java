@@ -6,6 +6,9 @@ import com.github.jaychenfe.pojo.vo.NewItemsVO;
 
 import java.util.List;
 
+/**
+ * @author jaychenfe
+ */
 public interface CategoryService {
 
     /**

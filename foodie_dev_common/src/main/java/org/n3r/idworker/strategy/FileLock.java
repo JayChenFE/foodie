@@ -4,7 +4,14 @@ package org.n3r.idworker.strategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
@@ -27,7 +34,8 @@ public class FileLock {
         this.file = file;
 
         try {
-            file.createNewFile(); // create the file if it doesn't exist
+            // create the file if it doesn't exist
+            file.createNewFile();
             channel = new RandomAccessFile(file, "rw").getChannel();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -51,6 +59,7 @@ public class FileLock {
 
     /**
      * Try to lock the file and return true if the locking succeeds
+     *
      * @return result of try to lock
      */
     public boolean tryLock() {

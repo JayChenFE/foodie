@@ -104,6 +104,14 @@
             <version>2.6</version>
         </dependency>
 
+        <!-- google工具类 guava-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.2-jre</version>
+        </dependency>
+
+
         <!-- swagger2 配置 -->
         <dependency>
             <groupId>io.springfox</groupId>

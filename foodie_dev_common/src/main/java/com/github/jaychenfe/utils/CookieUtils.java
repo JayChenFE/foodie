@@ -18,9 +18,11 @@ import java.util.stream.Stream;
  * @Title: CookieUtils.java
  * @Description: Cookie 工具类
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public final class CookieUtils {
 
     static final Logger logger = LoggerFactory.getLogger(CookieUtils.class);
+    static final String LOCAL_HOST = "localhost";
 
     /**
      * @param request    HttpServletRequest
@@ -207,7 +209,7 @@ public final class CookieUtils {
         if (null != request) {
             String domainName = getDomainName(request);
             logger.info("========== domainName: {} ==========", domainName);
-            if (!"localhost".equals(domainName)) {
+            if (!LOCAL_HOST.equals(domainName)) {
                 cookie.setDomain(domainName);
             }
         }

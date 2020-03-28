@@ -5,6 +5,9 @@ import com.github.jaychenfe.pojo.bo.AddressBO;
 
 import java.util.List;
 
+/**
+ * @author jaychenfe
+ */
 public interface AddressService {
 
     /**

@@ -1,14 +1,22 @@
 package com.github.jaychenfe.enmus;
 
 /**
- * @Desc: 性别 枚举
+ * 性别 枚举
+ *
+ * @author jaychenfe
  */
 public enum Sex {
-    // 女
+    /**
+     * 女
+     */
     woman(0, "女"),
-    // 男
+    /**
+     * 男
+     */
     man(1, "男"),
-    // 保密
+    /**
+     * 保密
+     */
     secret(2, "保密");
 
     public final Integer type;

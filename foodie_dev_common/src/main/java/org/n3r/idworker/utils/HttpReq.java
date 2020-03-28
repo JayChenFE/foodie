@@ -2,13 +2,19 @@ package org.n3r.idworker.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
+/**
+ * @author jaychenfe
+ */
 public class HttpReq {
     private final String baseUrl;
     private String req;
@@ -56,10 +62,10 @@ public class HttpReq {
             int status = http.getResponseCode();
             String charset = getCharset(http.getHeaderField("Content-Type"));
 
-            if (status == 200) {
+            if (status == HttpStatus.OK.value()) {
                 return readResponseBody(http, charset);
             } else {
-                logger.warn("non 200 respoonse :" + readErrorResponseBody(http, status, charset));
+                logger.warn("non 200 response :" + readErrorResponseBody(http, status, charset));
                 return null;
             }
         } catch (Exception e) {

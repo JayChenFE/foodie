@@ -3,6 +3,7 @@ package com.github.jaychenfe.utils;
 import java.util.List;
 
 /**
+ * @author jaychenfe
  * @Title: PagedGridResult.java
  * @Package com.github.jaychenfe.utils
  * @Description: 用来返回分页Grid的数据格式

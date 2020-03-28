@@ -11,6 +11,9 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
+/**
+ * @author jaychenfe
+ */
 @Service
 public class CarouselServiceImpl implements CarouselService {
 

@@ -3,14 +3,16 @@ package com.github.jaychenfe.pojo.vo;
 
 /**
  * 用于展示商品搜索列表结果的VO
+ *
+ * @author jaychenfe
  */
 public class SearchItemsVO {
 
     private String itemId;
     private String itemName;
-    private int sellCounts;
+    private Integer sellCounts;
     private String imgUrl;
-    private int price;
+    private Integer price;
 
     public String getItemId() {
         return itemId;
@@ -28,7 +30,7 @@ public class SearchItemsVO {
         this.itemName = itemName;
     }
 
-    public int getSellCounts() {
+    public Integer getSellCounts() {
         return sellCounts;
     }
 
@@ -44,7 +46,7 @@ public class SearchItemsVO {
         this.imgUrl = imgUrl;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 

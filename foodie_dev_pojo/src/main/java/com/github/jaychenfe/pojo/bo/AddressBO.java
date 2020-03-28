@@ -2,6 +2,7 @@ package com.github.jaychenfe.pojo.bo;
 
 /**
  * 用户新增或修改地址的BO
+ * @author jaychenfe
  */
 public class AddressBO {
 

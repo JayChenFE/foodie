@@ -5,6 +5,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * @author jaychenfe
+ */
 @Table(name = "user_address")
 public class UserAddress {
     /**

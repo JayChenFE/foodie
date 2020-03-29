@@ -7,10 +7,9 @@ import java.util.List;
  * @Title: PagedGridResult.java
  * @Package com.github.jaychenfe.utils
  * @Description: 用来返回分页Grid的数据格式
- * Copyright: Copyright (c) 2019
  */
 
-public class PagedGridResult {
+public class PagedGridResult<T> {
 
     /**
      * 当前页数
@@ -27,7 +26,7 @@ public class PagedGridResult {
     /**
      * 当页显示的内容
      */
-    private List<?> rows;
+    private List<T> rows;
 
     public int getPage() {
         return page;
@@ -53,11 +52,11 @@ public class PagedGridResult {
         this.records = records;
     }
 
-    public List<?> getRows() {
+    public List<T> getRows() {
         return rows;
     }
 
-    public void setRows(List<?> rows) {
+    public void setRows(List<T> rows) {
         this.rows = rows;
     }
 }

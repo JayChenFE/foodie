@@ -137,7 +137,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
-    public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
+    public PagedGridResult<SearchItemsVO> searchItems(String keywords, String sort, Integer page, Integer pageSize) {
 
         Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
         map.put("keywords", keywords);
@@ -151,7 +151,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
-    public PagedGridResult searchItems(Integer catId, String sort, Integer page, Integer pageSize) {
+    public PagedGridResult<SearchItemsVO> searchItems(Integer catId, String sort, Integer page, Integer pageSize) {
         Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
         map.put("catId", catId);
         map.put("sort", sort);

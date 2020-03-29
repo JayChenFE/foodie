@@ -124,7 +124,13 @@ public class CenterUserController extends BaseController {
             }
         }
 
+        updateUserFace(userId, request, response, uploadPathPrefix);
 
+
+        return ApiResponse.ok();
+    }
+
+    private void updateUserFace(@RequestParam @ApiParam(name = "userId", value = "用户id", required = true) String userId, HttpServletRequest request, HttpServletResponse response, String uploadPathPrefix) {
         // 获取图片服务地址
         String imageServerUrl = fileUpload.getImageServerUrl();
 
@@ -139,8 +145,6 @@ public class CenterUserController extends BaseController {
         CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
 
         // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
-
-        return ApiResponse.ok();
     }
 
     private boolean isImageSuffixOk(String suffix) {

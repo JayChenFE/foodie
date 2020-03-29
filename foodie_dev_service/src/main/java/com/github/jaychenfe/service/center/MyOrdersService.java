@@ -1,6 +1,8 @@
 package com.github.jaychenfe.service.center;
 
+import com.github.jaychenfe.pojo.OrderStatus;
 import com.github.jaychenfe.pojo.Orders;
+import com.github.jaychenfe.pojo.vo.MyOrdersVO;
 import com.github.jaychenfe.pojo.vo.OrderStatusCountsVO;
 import com.github.jaychenfe.utils.PagedGridResult;
 
@@ -18,10 +20,10 @@ public interface MyOrdersService {
      * @param pageSize    每页条数
      * @return 分页结果
      */
-    PagedGridResult queryMyOrders(String userId,
-                                  Integer orderStatus,
-                                  Integer page,
-                                  Integer pageSize);
+    PagedGridResult<MyOrdersVO> queryMyOrders(String userId,
+                                              Integer orderStatus,
+                                              Integer page,
+                                              Integer pageSize);
 
     /**
      * 订单状态 --> 商家发货
@@ -73,5 +75,5 @@ public interface MyOrdersService {
      * @param pageSize 每页条数
      * @return 分页的订单动向
      */
-    PagedGridResult getOrdersTrend(String userId, Integer page, Integer pageSize);
+    PagedGridResult<OrderStatus> getOrdersTrend(String userId, Integer page, Integer pageSize);
 }

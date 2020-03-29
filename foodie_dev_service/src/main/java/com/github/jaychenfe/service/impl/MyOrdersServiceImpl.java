@@ -45,10 +45,10 @@ public class MyOrdersServiceImpl implements MyOrdersService {
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
-    public PagedGridResult queryMyOrders(String userId,
-                                         Integer orderStatus,
-                                         Integer page,
-                                         Integer pageSize) {
+    public PagedGridResult<MyOrdersVO> queryMyOrders(String userId,
+                                                     Integer orderStatus,
+                                                     Integer page,
+                                                     Integer pageSize) {
 
         Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
         map.put("userId", userId);
@@ -158,7 +158,7 @@ public class MyOrdersServiceImpl implements MyOrdersService {
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
-    public PagedGridResult getOrdersTrend(String userId, Integer page, Integer pageSize) {
+    public PagedGridResult<OrderStatus> getOrdersTrend(String userId, Integer page, Integer pageSize) {
 
         Map<String, Object> map = Maps.newHashMapWithExpectedSize(1);
         map.put("userId", userId);

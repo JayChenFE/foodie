@@ -6,6 +6,8 @@ import com.github.jaychenfe.pojo.ItemsImg;
 import com.github.jaychenfe.pojo.ItemsParam;
 import com.github.jaychenfe.pojo.ItemsSpec;
 import com.github.jaychenfe.pojo.vo.CommentLevelCountsVO;
+import com.github.jaychenfe.pojo.vo.ItemCommentVO;
+import com.github.jaychenfe.pojo.vo.SearchItemsVO;
 import com.github.jaychenfe.pojo.vo.ShopCartVO;
 import com.github.jaychenfe.utils.PagedGridResult;
 
@@ -65,7 +67,7 @@ public interface ItemService {
      * @param pageSize 每页大小
      * @return 分页评论
      */
-    PagedGridResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize);
+    PagedGridResult<ItemCommentVO> queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize);
 
     /**
      * 搜索商品列表
@@ -76,7 +78,7 @@ public interface ItemService {
      * @param pageSize 每页大小
      * @return 商品搜索结果
      */
-    PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
+    PagedGridResult<SearchItemsVO> searchItems(String keywords, String sort, Integer page, Integer pageSize);
 
 
     /**
@@ -88,7 +90,7 @@ public interface ItemService {
      * @param pageSize 每页大小
      * @return 商品搜索结果
      */
-    PagedGridResult searchItems(Integer catId, String sort, Integer page, Integer pageSize);
+    PagedGridResult<SearchItemsVO> searchItems(Integer catId, String sort, Integer page, Integer pageSize);
 
     /**
      * 根据规格ids查询最新的购物车中商品数据（用于刷新渲染购物车中的商品数据）
@@ -117,7 +119,7 @@ public interface ItemService {
     /**
      * 减少库存
      *
-     * @param specId 商品规格id
+     * @param specId    商品规格id
      * @param buyCounts 购买数量
      */
     void decreaseItemSpecStock(String specId, int buyCounts);

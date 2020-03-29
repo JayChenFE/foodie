@@ -5,7 +5,9 @@ import com.github.jaychenfe.pojo.ItemsImg;
 import com.github.jaychenfe.pojo.ItemsParam;
 import com.github.jaychenfe.pojo.ItemsSpec;
 import com.github.jaychenfe.pojo.vo.CommentLevelCountsVO;
+import com.github.jaychenfe.pojo.vo.ItemCommentVO;
 import com.github.jaychenfe.pojo.vo.ItemInfoVO;
+import com.github.jaychenfe.pojo.vo.SearchItemsVO;
 import com.github.jaychenfe.pojo.vo.ShopCartVO;
 import com.github.jaychenfe.service.ItemService;
 import com.github.jaychenfe.utils.ApiResponse;
@@ -78,87 +80,61 @@ public class ItemsController extends BaseController {
 
     @ApiOperation(value = "查询商品评论", notes = "查询商品评论")
     @GetMapping("/comments")
-    public ApiResponse comments(
-            @ApiParam(name = "itemId", value = "商品id", required = true)
-            @RequestParam String itemId,
-            @ApiParam(name = "level", value = "评价等级")
-            @RequestParam Integer level,
-            @ApiParam(name = "page", value = "查询下一页的第几页")
-            @RequestParam Integer page,
-            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
-            @RequestParam Integer pageSize) {
+    public ApiResponse comments(@ApiParam(name = "itemId", value = "商品id", required = true)
+                                @RequestParam String itemId,
+                                @ApiParam(name = "level", value = "评价等级")
+                                @RequestParam Integer level,
+                                @ApiParam(name = "page", value = "查询下一页的第几页")
+                                @RequestParam(defaultValue = "1") Integer page,
+                                @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
 
         if (StringUtils.isBlank(itemId)) {
             return ApiResponse.errorMsg(null);
         }
 
-        if (page == null) {
-            page = 1;
-        }
-
-        if (pageSize == null) {
-            pageSize = COMMON_PAGE_SIZE;
-        }
-
-        PagedGridResult grid = itemService.queryPagedComments(itemId, level, page, pageSize);
+        PagedGridResult<ItemCommentVO> grid = itemService.queryPagedComments(itemId, level, page, pageSize);
 
         return ApiResponse.ok(grid);
     }
 
     @ApiOperation(value = "搜索商品列表", notes = "搜索商品列表")
     @GetMapping("/search")
-    public ApiResponse search(
-            @ApiParam(name = "keywords", value = "关键字", required = true)
-            @RequestParam String keywords,
-            @ApiParam(name = "sort", value = "排序")
-            @RequestParam String sort,
-            @ApiParam(name = "page", value = "查询下一页的第几页")
-            @RequestParam Integer page,
-            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
-            @RequestParam Integer pageSize) {
+    public ApiResponse search(@ApiParam(name = "keywords", value = "关键字", required = true)
+                              @RequestParam String keywords,
+                              @ApiParam(name = "sort", value = "排序")
+                              @RequestParam String sort,
+                              @ApiParam(name = "page", value = "查询下一页的第几页")
+                              @RequestParam(defaultValue = "1") Integer page,
+                              @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
+                              @RequestParam(defaultValue = "20") Integer pageSize) {
 
         if (StringUtils.isBlank(keywords)) {
             return ApiResponse.errorMsg(null);
         }
 
-        if (page == null) {
-            page = 1;
-        }
 
-        if (pageSize == null) {
-            pageSize = PAGE_SIZE;
-        }
-
-        PagedGridResult grid = itemService.searchItems(keywords, sort, page, pageSize);
+        PagedGridResult<SearchItemsVO> grid = itemService.searchItems(keywords, sort, page, pageSize);
 
         return ApiResponse.ok(grid);
     }
 
     @ApiOperation(value = "通过分类id搜索商品列表", notes = "通过分类id搜索商品列表", httpMethod = "GET")
     @GetMapping("/catItems")
-    public ApiResponse catItems(
-            @ApiParam(name = "catId", value = "三级分类id", required = true)
-            @RequestParam Integer catId,
-            @ApiParam(name = "sort", value = "排序")
-            @RequestParam String sort,
-            @ApiParam(name = "page", value = "查询下一页的第几页")
-            @RequestParam Integer page,
-            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
-            @RequestParam Integer pageSize) {
+    public ApiResponse catItems(@ApiParam(name = "catId", value = "三级分类id", required = true)
+                                @RequestParam Integer catId,
+                                @ApiParam(name = "sort", value = "排序")
+                                @RequestParam String sort,
+                                @ApiParam(name = "page", value = "查询下一页的第几页")
+                                @RequestParam(defaultValue = "1") Integer page,
+                                @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
+                                @RequestParam(defaultValue = "20") Integer pageSize) {
 
         if (catId == null) {
             return ApiResponse.errorMsg(null);
         }
 
-        if (page == null) {
-            page = 1;
-        }
-
-        if (pageSize == null) {
-            pageSize = PAGE_SIZE;
-        }
-
-        PagedGridResult grid = itemService.searchItems(catId, sort, page, pageSize);
+        PagedGridResult<SearchItemsVO> grid = itemService.searchItems(catId, sort, page, pageSize);
 
         return ApiResponse.ok(grid);
     }
@@ -171,9 +147,8 @@ public class ItemsController extends BaseController {
      */
     @ApiOperation(value = "根据商品规格ids查找最新的商品数据", notes = "根据商品规格ids查找最新的商品数据", httpMethod = "GET")
     @GetMapping("/refresh")
-    public ApiResponse refresh(
-            @ApiParam(name = "itemSpecIds", value = "拼接的规格ids", required = true, example = "1001,1003,1005")
-            @RequestParam String itemSpecIds) {
+    public ApiResponse refresh(@ApiParam(name = "itemSpecIds", value = "拼接的规格ids", required = true, example = "1001,1003,1005")
+                               @RequestParam String itemSpecIds) {
 
         if (StringUtils.isBlank(itemSpecIds)) {
             return ApiResponse.ok();

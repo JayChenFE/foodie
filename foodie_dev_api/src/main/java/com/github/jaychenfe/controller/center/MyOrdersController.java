@@ -1,7 +1,8 @@
 package com.github.jaychenfe.controller.center;
 
 import com.github.jaychenfe.controller.BaseController;
-import com.github.jaychenfe.pojo.Orders;
+import com.github.jaychenfe.pojo.OrderStatus;
+import com.github.jaychenfe.pojo.vo.MyOrdersVO;
 import com.github.jaychenfe.pojo.vo.OrderStatusCountsVO;
 import com.github.jaychenfe.service.center.MyOrdersService;
 import com.github.jaychenfe.utils.ApiResponse;
@@ -35,9 +36,8 @@ public class MyOrdersController extends BaseController {
 
     @ApiOperation(value = "获得订单状态数概况", notes = "获得订单状态数概况", httpMethod = "POST")
     @PostMapping("/statusCounts")
-    public ApiResponse statusCounts(
-            @ApiParam(name = "userId", value = "用户id", required = true)
-            @RequestParam String userId) {
+    public ApiResponse statusCounts(@ApiParam(name = "userId", value = "用户id", required = true)
+                                    @RequestParam String userId) {
 
         if (StringUtils.isBlank(userId)) {
             return ApiResponse.errorMsg(null);
@@ -50,30 +50,20 @@ public class MyOrdersController extends BaseController {
 
     @ApiOperation(value = "查询订单列表", notes = "查询订单列表", httpMethod = "POST")
     @PostMapping("/query")
-    public ApiResponse query(
-            @ApiParam(name = "userId", value = "用户id", required = true)
-            @RequestParam String userId,
-            @ApiParam(name = "orderStatus", value = "订单状态")
-            @RequestParam Integer orderStatus,
-            @ApiParam(name = "page", value = "查询下一页的第几页")
-            @RequestParam Integer page,
-            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
-            @RequestParam Integer pageSize) {
+    public ApiResponse query(@ApiParam(name = "userId", value = "用户id", required = true)
+                             @RequestParam String userId,
+                             @ApiParam(name = "orderStatus", value = "订单状态")
+                             @RequestParam Integer orderStatus,
+                             @ApiParam(name = "page", value = "查询下一页的第几页")
+                             @RequestParam(defaultValue = "1") Integer page,
+                             @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
+                             @RequestParam(defaultValue = "20") Integer pageSize) {
 
         if (StringUtils.isBlank(userId)) {
             return ApiResponse.errorMsg(null);
         }
-        if (page == null) {
-            page = 1;
-        }
-        if (pageSize == null) {
-            pageSize = COMMON_PAGE_SIZE;
-        }
 
-        PagedGridResult grid = myOrdersService.queryMyOrders(userId,
-                orderStatus,
-                page,
-                pageSize);
+        PagedGridResult<MyOrdersVO> grid = myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
 
         return ApiResponse.ok(grid);
     }
@@ -95,11 +85,10 @@ public class MyOrdersController extends BaseController {
 
     @ApiOperation(value = "用户确认收货", notes = "用户确认收货", httpMethod = "POST")
     @PostMapping("/confirmReceive")
-    public ApiResponse confirmReceive(
-            @ApiParam(name = "orderId", value = "订单id", required = true)
-            @RequestParam String orderId,
-            @ApiParam(name = "userId", value = "用户id", required = true)
-            @RequestParam String userId) throws Exception {
+    public ApiResponse confirmReceive(@ApiParam(name = "orderId", value = "订单id", required = true)
+                                      @RequestParam String orderId,
+                                      @ApiParam(name = "userId", value = "用户id", required = true)
+                                      @RequestParam String userId) {
 
         ApiResponse checkResult = checkUserOrder(userId, orderId);
         if (checkResult.getStatus() != HttpStatus.OK.value()) {
@@ -135,39 +124,20 @@ public class MyOrdersController extends BaseController {
     }
 
 
-    /**
-     * 用于验证用户和订单是否有关联关系，避免非法用户调用
-     *
-     * @return
-     */
-    private ApiResponse checkUserOrder(String userId, String orderId) {
-        Orders order = myOrdersService.queryMyOrder(userId, orderId);
-        if (order == null) {
-            return ApiResponse.errorMsg("订单不存在！");
-        }
-        return ApiResponse.ok();
-    }
-
     @ApiOperation(value = "查询订单动向", notes = "查询订单动向", httpMethod = "POST")
     @PostMapping("/trend")
     public ApiResponse trend(@ApiParam(name = "userId", value = "用户id", required = true)
                              @RequestParam String userId,
                              @ApiParam(name = "page", value = "查询下一页的第几页")
-                             @RequestParam Integer page,
+                             @RequestParam(defaultValue = "1") Integer page,
                              @ApiParam(name = "pageSize", value = "分页的每一页显示的条数")
-                             @RequestParam Integer pageSize) {
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
 
         if (StringUtils.isBlank(userId)) {
             return ApiResponse.errorMsg(null);
         }
-        if (page == null) {
-            page = 1;
-        }
-        if (pageSize == null) {
-            pageSize = COMMON_PAGE_SIZE;
-        }
 
-        PagedGridResult grid = myOrdersService.getOrdersTrend(userId, page, pageSize);
+        PagedGridResult<OrderStatus> grid = myOrdersService.getOrdersTrend(userId, page, pageSize);
 
         return ApiResponse.ok(grid);
     }

@@ -18,7 +18,6 @@
             <result column="itemId" property="itemId"/>
             <result column="itemName" property="itemName"/>
             <result column="itemImg" property="itemImg"/>
-
             <result column="itemSpecName" property="itemSpecName"/>
             <result column="buyCounts" property="buyCounts"/>
             <result column="price" property="price"/>
@@ -27,26 +26,40 @@
 
     <select id="queryMyOrders" resultMap="myOrdersVO" parameterType="Map">
         SELECT
-            od.id AS orderId,
-            od.created_time AS createdTime,
-            od.pay_method AS payMethod,
-            od.real_pay_amount AS realPayAmount,
-            od.post_amount AS postAmount,
-            os.order_status AS orderStatus,
-            od.is_comment AS isComment
+        od.id AS orderId,
+        od.created_time AS createdTime,
+        od.pay_method AS payMethod,
+        od.real_pay_amount AS realPayAmount,
+        od.post_amount AS postAmount,
+        os.order_status AS orderStatus,
+        od.is_comment AS isComment
         FROM
-            orders od
-            LEFT JOIN order_status os ON od.id = os.order_id
+        orders od
+        LEFT JOIN order_status os ON od.id = os.order_id
         WHERE
-            od.user_id = #{paramsMap.userId}
-            AND od.is_delete = 0
+        od.user_id = #{paramsMap.userId}
+        AND od.is_delete = 0
         <if test="paramsMap.orderStatus != null">
             AND os.order_status = #{paramsMap.orderStatus}
         </if>
         ORDER BY
         od.updated_time ASC
     </select>
+    <select id="getSubItems" parameterType="String" resultType="com.github.jaychenfe.pojo.vo.MySubOrderItemVO">
 
+      select
+        oi.item_id as itemId,
+        oi.item_name as itemName,
+        oi.item_img as itemImg,
+        oi.item_spec_name as itemSpecName,
+        oi.buy_counts as buyCounts,
+        oi.price as price
+      from
+        order_items oi
+      where
+        oi.order_id = #{orderId}
+
+    </select>
     <select id="getMyOrderStatusCounts" parameterType="Map" resultType="int">
         SELECT
         count(1)

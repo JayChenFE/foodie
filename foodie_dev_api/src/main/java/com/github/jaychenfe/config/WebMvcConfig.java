@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 // 启用静态资源映射会破坏swagger默认的映射,所以需要重新映射swagger2
                 .addResourceLocations("classpath:/META-INF/resources/")
                 // 映射本地静态资源
-                .addResourceLocations("file:d:\\images\\");
+                .addResourceLocations("file:/workspaces/images/");
     }
 
     @Bean

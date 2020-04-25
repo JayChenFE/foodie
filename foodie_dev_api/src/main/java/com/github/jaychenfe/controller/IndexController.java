@@ -91,7 +91,6 @@ public class IndexController {
         if (rootCatId == null) {
             return ApiResponse.errorMsg("分类不存在");
         }
-        
         final String subCatKey = "cat" + rootCatId;
         List<CategoryVO> list;
         String catStr = redisOperator.get(subCatKey);

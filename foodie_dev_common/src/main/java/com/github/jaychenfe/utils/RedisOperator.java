@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisOperator {
 
-    private StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Autowired
     public RedisOperator(StringRedisTemplate redisTemplate) {
@@ -104,7 +104,7 @@ public class RedisOperator {
      * @return value
      */
     public String get(String key) {
-        return (String) redisTemplate.opsForValue().get(key);
+        return redisTemplate.opsForValue().get(key);
     }
 
     // Hash（哈希表）
@@ -171,7 +171,7 @@ public class RedisOperator {
      * @return 列表key的头元素。
      */
     public String lpop(String key) {
-        return (String) redisTemplate.opsForList().leftPop(key);
+        return redisTemplate.opsForList().leftPop(key);
     }
 
     /**

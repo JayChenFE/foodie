@@ -119,5 +119,4 @@ public class IndexController {
         List<NewItemsVO> list = categoryService.getSixNewItemsLazy(rootCatId);
         return ApiResponse.ok(list);
     }
-
 }

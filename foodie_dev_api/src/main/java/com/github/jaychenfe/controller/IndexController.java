@@ -34,7 +34,6 @@ public class IndexController {
     private final CategoryService categoryService;
     private final RedisOperator redisOperator;
 
-
     @Autowired
     public IndexController(CarouselService carouselService,
                            CategoryService categoryService,
@@ -91,7 +90,7 @@ public class IndexController {
         if (rootCatId == null) {
             return ApiResponse.errorMsg("分类不存在");
         }
-        final String subCatKey = "cat" + rootCatId;
+        final String subCatKey = "subCat:" + rootCatId;
         List<CategoryVO> list;
         String catStr = redisOperator.get(subCatKey);
 

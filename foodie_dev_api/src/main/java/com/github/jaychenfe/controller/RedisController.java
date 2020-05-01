@@ -15,8 +15,12 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("redis")
 public class RedisController {
 
+    private final RedisOperator redisOperator;
+
     @Autowired
-    private RedisOperator redisOperator;
+    public RedisController(RedisOperator redisOperator) {
+        this.redisOperator = redisOperator;
+    }
 
     @GetMapping("/set")
     public Object set(String key, String value) {

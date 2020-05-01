@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BaseController {
 
-    public static final String FOODIE_SHOP_CART = "shopcart";
-
     /**
      * 支付中心的调用地址
      */

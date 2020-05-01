@@ -12,12 +12,14 @@ import com.github.jaychenfe.pojo.OrderItems;
 import com.github.jaychenfe.pojo.OrderStatus;
 import com.github.jaychenfe.pojo.Orders;
 import com.github.jaychenfe.pojo.UserAddress;
+import com.github.jaychenfe.pojo.bo.ShopCartBO;
 import com.github.jaychenfe.pojo.bo.SubmitOrderBO;
 import com.github.jaychenfe.pojo.vo.MerchantOrdersVO;
 import com.github.jaychenfe.pojo.vo.OrderVO;
 import com.github.jaychenfe.service.AddressService;
 import com.github.jaychenfe.service.ItemService;
 import com.github.jaychenfe.service.OrderService;
+import com.github.jaychenfe.utils.RedisOperator;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author jaychenfe
@@ -33,12 +37,15 @@ import java.util.Date;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private OrdersMapper ordersMapper;
-    private OrderItemsMapper orderItemsMapper;
-    private OrderStatusMapper orderStatusMapper;
-    private AddressService addressService;
-    private ItemService itemService;
-    private Sid sid;
+    private final AddressService addressService;
+    private final ItemService itemService;
+
+    private final OrdersMapper ordersMapper;
+    private final OrderItemsMapper orderItemsMapper;
+    private final OrderStatusMapper orderStatusMapper;
+
+    private final RedisOperator redisOperator;
+    private final Sid sid;
 
     @Autowired
     public OrderServiceImpl(OrdersMapper ordersMapper,
@@ -46,18 +53,19 @@ public class OrderServiceImpl implements OrderService {
                             OrderStatusMapper orderStatusMapper,
                             AddressService addressService,
                             ItemService itemService,
-                            Sid sid) {
+                            RedisOperator redisOperator, Sid sid) {
         this.ordersMapper = ordersMapper;
         this.orderItemsMapper = orderItemsMapper;
         this.orderStatusMapper = orderStatusMapper;
         this.addressService = addressService;
         this.itemService = itemService;
+        this.redisOperator = redisOperator;
         this.sid = sid;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
-    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(SubmitOrderBO submitOrderBO, List<ShopCartBO> shopCartBOList) {
 
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
@@ -73,7 +81,9 @@ public class OrderServiceImpl implements OrderService {
         Orders newOrder = createNewOrder(submitOrderBO, postAmount, orderId, address);
 
         // 2. 循环根据itemSpecIds保存订单商品信息表,并计算实际支付价格
-        int realPayAmount = saveNewOrderAndGetRealPayAmount(itemSpecIds, orderId, newOrder);
+        List<ShopCartBO> toRemoveShopCartBOList = new ArrayList<>();
+        int realPayAmount = saveNewOrderAndGetRealPayAmount(itemSpecIds, orderId, newOrder,
+                shopCartBOList, toRemoveShopCartBOList);
 
         // 3. 保存订单状态表
         saveOrderStatus(orderId);
@@ -85,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderId(orderId);
         orderVO.setMerchantOrdersVO(merchantOrdersVO);
+        orderVO.setToRemoveShopCartBOList(toRemoveShopCartBOList);
 
         return orderVO;
     }
@@ -124,16 +135,27 @@ public class OrderServiceImpl implements OrderService {
         orderStatusMapper.insert(waitPayOrderStatus);
     }
 
-    private int saveNewOrderAndGetRealPayAmount(String itemSpecIds, String orderId, Orders newOrder) {
+    private int saveNewOrderAndGetRealPayAmount(String itemSpecIds,
+                                                String orderId,
+                                                Orders newOrder,
+                                                List<ShopCartBO> shopCartBOList,
+                                                List<ShopCartBO> toRemoveShopCartBOList) {
         String[] itemSpecIdArr = itemSpecIds.split(",");
         // 商品原价累计
         int totalAmount = 0;
         // 优惠后的实际支付价格累计
         int realPayAmount = 0;
+
         for (String itemSpecId : itemSpecIdArr) {
 
-            // TODO 整合redis后，商品购买的数量重新从redis的购物车中获取
-            int buyCounts = 1;
+            ShopCartBO shopCartItem = shopCartBOList
+                    .stream()
+                    .filter(x -> x.getSpecId().equals(itemSpecId))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+
+            int buyCounts = shopCartItem.getBuyCounts();
+            toRemoveShopCartBOList.add(shopCartItem);
 
             // 2.1 根据规格id，查询规格的具体信息，主要获取价格
             ItemsSpec itemSpec = itemService.queryItemSpecById(itemSpecId);

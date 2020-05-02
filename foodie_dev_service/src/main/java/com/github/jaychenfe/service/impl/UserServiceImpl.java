@@ -4,7 +4,6 @@ import com.github.jaychenfe.enmus.Sex;
 import com.github.jaychenfe.mapper.UsersMapper;
 import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.UserBO;
-import com.github.jaychenfe.pojo.vo.UserVO;
 import com.github.jaychenfe.service.UserService;
 import com.github.jaychenfe.utils.DateUtil;
 import com.github.jaychenfe.utils.Md5Utils;
@@ -24,8 +23,8 @@ import java.util.Date;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UsersMapper usersMapper;
-    private Sid sid;
+    private final UsersMapper usersMapper;
+    private final Sid sid;
 
     private static final String USER_FACE = "http://cdn.u2.huluxia.com/g3/M02/07/9A/wKgBOVppEEaAL9jpAAHkJnWvt-c68.jpeg";
 
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
-    public UserVO createUser(UserBO userBO) {
+    public Users createUser(UserBO userBO) {
         Users users = new Users();
         BeanUtils.copyProperties(userBO, users);
         users.setId(sid.nextShort());
@@ -62,26 +61,17 @@ public class UserServiceImpl implements UserService {
 
         usersMapper.insert(users);
 
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(users, userVO);
-        return userVO;
+        return users;
     }
 
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = Exception.class)
     @Override
-    public UserVO queryUserForLogin(String username, String password) {
+    public Users queryUserForLogin(String username, String password) {
         Example userExample = new Example(Users.class);
         Example.Criteria userCriteria = userExample.createCriteria();
         userCriteria.andEqualTo("username", username);
         userCriteria.andEqualTo("password", password);
 
-        Users users = usersMapper.selectOneByExample(userExample);
-        if (users == null) {
-            return null;
-        }
-
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(users, userVO);
-        return userVO;
+        return usersMapper.selectOneByExample(userExample);
     }
 }

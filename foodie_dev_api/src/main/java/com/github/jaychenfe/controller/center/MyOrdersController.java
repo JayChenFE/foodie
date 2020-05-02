@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("myorders")
 public class MyOrdersController extends BaseController {
 
-    private MyOrdersService myOrdersService;
+    private final MyOrdersService myOrdersService;
 
     @Autowired
     public MyOrdersController(MyOrdersService myOrdersService) {

@@ -3,6 +3,7 @@ package com.github.jaychenfe.controller.center;
 import com.github.jaychenfe.controller.BaseController;
 import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.center.CenterUserBO;
+import com.github.jaychenfe.pojo.vo.UserVO;
 import com.github.jaychenfe.resource.FileUpload;
 import com.github.jaychenfe.service.center.CenterUserService;
 import com.github.jaychenfe.utils.ApiResponse;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +45,9 @@ import java.util.Map;
 @RequestMapping("userInfo")
 public class CenterUserController extends BaseController {
 
-    private CenterUserService centerUserService;
-    private FileUpload fileUpload;
+    private final CenterUserService centerUserService;
+    private final FileUpload fileUpload;
+    private final String[] IMAGE_PREFIX_ARR = new String[]{"png", "jpg", "jpeg"};
 
     @Autowired
     public CenterUserController(CenterUserService centerUserService, FileUpload fileUpload) {
@@ -141,16 +144,16 @@ public class CenterUserController extends BaseController {
         // 更新用户头像到数据库
         Users userResult = centerUserService.updateUserFace(userId, finalUserFaceUrl);
 
-        userResult = setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+        // 增加令牌token，会整合进redis，分布式会话
+        UserVO userVO = saveSessionAndConvertUserVO(userResult);
 
-        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVO), true);
+
+
     }
 
     private boolean isImageSuffixOk(String suffix) {
-        return "png".equalsIgnoreCase(suffix) ||
-                "jpg".equalsIgnoreCase(suffix) ||
-                "jpeg".equalsIgnoreCase(suffix);
+        return Arrays.asList(IMAGE_PREFIX_ARR).contains(suffix);
     }
 
 
@@ -173,11 +176,13 @@ public class CenterUserController extends BaseController {
 
         Users userResult = centerUserService.updateUserInfo(userId, centerUserBO);
 
-        setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user",
-                JsonUtils.objectToJson(userResult), true);
 
-        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
+        // 增加令牌token，会整合进redis，分布式会话
+
+        UserVO userVO = saveSessionAndConvertUserVO(userResult);
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(userVO), true);
+
 
         return ApiResponse.ok();
     }
@@ -196,15 +201,4 @@ public class CenterUserController extends BaseController {
         }
         return map;
     }
-
-    private Users setNullProperty(Users userResult) {
-        userResult.setPassword(null);
-        userResult.setMobile(null);
-        userResult.setEmail(null);
-        userResult.setCreatedTime(null);
-        userResult.setUpdatedTime(null);
-        userResult.setBirthday(null);
-        return userResult;
-    }
-
 }

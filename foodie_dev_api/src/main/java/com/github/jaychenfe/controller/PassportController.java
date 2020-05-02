@@ -1,5 +1,6 @@
 package com.github.jaychenfe.controller;
 
+import com.github.jaychenfe.pojo.Users;
 import com.github.jaychenfe.pojo.bo.ShopCartBO;
 import com.github.jaychenfe.pojo.bo.UserBO;
 import com.github.jaychenfe.pojo.vo.UserVO;
@@ -31,7 +32,7 @@ import java.util.List;
 @Api(value = "注册登录", tags = {"注册登录"})
 @RestController
 @RequestMapping("passport")
-public class PassportController {
+public class PassportController extends BaseController{
 
     private static final int MIN_LENGTH_OF_PASSWORD = 6;
 
@@ -94,15 +95,18 @@ public class PassportController {
             return ApiResponse.errorMsg("两次输入密码不一致");
         }
 
-        UserVO userVO = userService.createUser(userBO);
+        Users user = userService.createUser(userBO);
+        // 实现redis用户会话
+        UserVO userVO = saveSessionAndConvertUserVO(user);
 
         CookieUtils.setCookie(request, response, "user",
                 JsonUtils.objectToJson(userVO), true);
 
-        syncShopcartData(userVO.getId(), request, response);
+        syncShopCartData(userVO.getId(), request, response);
 
         return ApiResponse.ok(userVO);
     }
+
 
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/login")
@@ -118,27 +122,35 @@ public class PassportController {
             return ApiResponse.errorMsg("用户名或密码不能为空");
         }
 
-        UserVO userVO = userService.queryUserForLogin(username, Md5Utils.getMd5Str(password));
-        if (userVO == null) {
+        Users user = userService.queryUserForLogin(username, Md5Utils.getMd5Str(password));
+        if (user == null) {
             return ApiResponse.errorMsg("用户名或密码错误");
         }
 
+        UserVO userVO = saveSessionAndConvertUserVO(user);
+
         CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userVO), true);
-        syncShopcartData(userVO.getId(), request, response);
+        syncShopCartData(userVO.getId(), request, response);
         return ApiResponse.ok(userVO);
 
     }
 
     @ApiOperation(value = "用户退出登录", notes = "用户退出登录")
     @PostMapping("/logout")
-    public ApiResponse logout(HttpServletRequest request,
+    public ApiResponse logout(@RequestParam String userId,
+                              HttpServletRequest request,
                               HttpServletResponse response) {
 
-        // 清除用户的相关信息的cookie
+        // 清除redis会话
+        redisOperator.del("user_token:" + userId);
+
+        // 清空cookie购物车
         CookieUtils.deleteCookie(request, response, "user");
 
         return ApiResponse.ok();
     }
+
+
 
     /**
      * 注册登录成功后,同步购物车相关cookie和redis中的数据
@@ -152,7 +164,7 @@ public class PassportController {
      * 3.同步到redis后,覆盖本地cookie购物车数据
      */
 
-    private void syncShopcartData(String userId,
+    private void syncShopCartData(String userId,
                                   HttpServletRequest request,
                                   HttpServletResponse response) {
         final String redisKey = "shopCart:" + userId;
@@ -193,14 +205,9 @@ public class PassportController {
                 redisShopCartBOList.addAll(cookieShopCartBOList);
 
                 String shopCartJson = JsonUtils.objectToJson(redisShopCartBOList);
-
                 redisOperator.set(redisKey, shopCartJson);
                 CookieUtils.setCookie(request, response, cookieName, shopCartJson, true);
-
             }
         }
-
-
     }
-
 }

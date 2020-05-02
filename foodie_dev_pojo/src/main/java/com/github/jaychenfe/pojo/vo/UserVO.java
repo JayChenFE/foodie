@@ -12,6 +12,7 @@ public class UserVO {
     private String nickname;
     private String face;
     private Date birthday;
+    private String userUniqueToken;
 
     public String getId() {
         return id;
@@ -62,5 +63,13 @@ public class UserVO {
                 ", face='" + face + '\'' +
                 ", birthday=" + birthday +
                 '}';
+    }
+
+    public String getUserUniqueToken() {
+        return userUniqueToken;
+    }
+
+    public void setUserUniqueToken(String userUniqueToken) {
+        this.userUniqueToken = userUniqueToken;
     }
 }

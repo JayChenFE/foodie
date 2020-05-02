@@ -33,7 +33,7 @@ import java.util.List;
 @RequestMapping("items")
 public class ItemsController extends BaseController {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
     @Autowired
     public ItemsController(ItemService itemService) {

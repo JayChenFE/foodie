@@ -20,6 +20,7 @@
         <module>foodie_dev_mapper</module>
         <module>foodie_dev_service</module>
         <module>foodie_dev_api</module>
+        <module>foodie-sso</module>
     </modules>
     <packaging>pom</packaging>
 

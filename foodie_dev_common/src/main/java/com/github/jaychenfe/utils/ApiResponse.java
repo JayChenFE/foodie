@@ -71,6 +71,10 @@ public class ApiResponse {
         return new ApiResponse(556, msg, null);
     }
 
+    public static ApiResponse errorUserTicket(String msg) {
+        return new ApiResponse(557, msg, null);
+    }
+
     public ApiResponse() {
 
     }
